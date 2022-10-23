@@ -1,40 +1,36 @@
-class Usuario {
-    constructor (nombre, apellido,){
-        this.nombre = nombre;
-        this.apellido = apellido;
-        this.mascotas = []
-        this.libro = []
-    }
- 
-    getFullName = () =>{
-        console.log(`Hola soy ${this.nombre} ${this.apellido} `)
-    }
+const Manager = require("./manager");
+const manager = new Manager();
 
-    AddMascotas = (mascotas) =>{
-        this.mascotas.push(mascotas)
-       } 
-       
-     CountMascotas = () =>{
-        console.log(`Tengo ${this.mascotas.length} mascotas`)
-    } 
-    
-    AddBook = (nombre,autor) => {
-        this.libro.push({nombre,autor})
-    }
-   
-    getBooknames = () =>{
-        console.log(this.libro.map(libro => libro.nombre))
-    }
+
+//Propiedades del nuevo producto que se quiera guardar
+let producto ={
+    titulo: "Cafetera",
+    precio: 6000,
+    img:"https://arcencohogar.vtexassets.com/arquivos/ids/325019/Cafetera-AC950-lateral-7793862010708.jpg?v=637922109998500000",
 }
 
-const Usuario1 = new Usuario ("Agustin", "Veliz")
-Usuario1.getFullName ()
 
-Usuario1.AddMascotas ("Perro")
-Usuario1.AddMascotas ("Gato")
-Usuario1.CountMascotas() 
+//Guardar un nuevo producto
+ //manager.save(producto).then((response) =>{
+  // console.log(response)
+ //});
+
+ 
+ //mostrar un producto por id (getBYid)
+ //manager.getById(2).then((response) =>{
+ //console.log(response);   })
+
+ 
+//Mostrar TODOS los produtcos
+// manager.getAll().then((response) =>{
+//     console.log(response)
+// })
+
+  //Eliminar un producto por su ID
+// manager.deleteById(1).then((response) => {
+//     console.log(response);
+//     });
 
 
-Usuario1.AddBook("Frankenstein", "Mary Shelley")
-Usuario1.AddBook("Don Quijote de La Mancha", "Miguel de Cervates")
-Usuario1.getBooknames() 
+//Eliminar TODOS los productos
+// manager.deleteAll()

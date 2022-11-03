@@ -1,7 +1,7 @@
-const fs = require("fs");
-const path = require("path");
-const pathToFile = "./products.json";
+import fs from "fs"
+import __dirname from "../utils.js";
 
+const pathToFile = __dirname+"/products.json";
 
 
 const success = {
@@ -9,7 +9,7 @@ const success = {
     message: "Producto creado"
     }
 
-    class Manager {
+   class Manager{
     save = async (producto) => {
         if(!producto.titulo || !producto.precio || !producto.img){
             return {
@@ -147,5 +147,4 @@ const success = {
 
 }
 
-
-module.exports = Manager;
+export default Manager

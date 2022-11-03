@@ -1,17 +1,17 @@
 import express from 'express';
-import fs from "fs"
+import ProductosRouter from './routes/productos.router.js';
+import __dirname from './utils.js';
 
 const app = express(); //inciar el aplicativo
-const server = app.listen(8080,()=>console.log("Listening on Express :)")) //Poner al aplicativo a escuchar
+const server = app.listen(8080,()=>console.log("Se creo la pagina")) //Poner al aplicativo a escuchar
 
-let data = fs.readFileSync("./products.json")
-let productos = JSON.parse(data)
 
-app.get('/productos',(req,res) =>{
-    res.send(productos)
-})
 
-app.get('/productos/productoRamdom', (req,res)=>{
- let RamdomProducto = productos[Math.floor(Math.random()*productos.length)];
- res.send(RamdomProducto)
-})
+
+app.use(express.json())
+app.use(express.static(__dirname+'/public'))
+
+
+app.use('/api/productos',ProductosRouter)
+
+

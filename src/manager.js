@@ -2,6 +2,8 @@ const fs = require("fs");
 const path = require("path");
 const pathToFile = "./products.json";
 
+
+
 const success = {
     status: "Bien hecho",
     message: "Producto creado"

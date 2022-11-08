@@ -1,0 +1,17 @@
+<%- include("./partials/head") %> 
+
+        <% if (productosArray.length > 0) { %>
+            <ul class="card-product">
+                <% productosArray.forEach(producto => { %>
+                    <div>
+                        <li> Título: <%= producto.titulo %>  </li>
+                        <li> Precio: $<%= producto.precio %>  </li>         
+                        <li> Imagen: <img src=<%= `${producto.image}` %>> </li>
+                    </div>
+                <% }) %>
+            </ul>
+        <% } else {%>
+            <p>No hay productos por mostrar</p>
+        <% } %> 
+    
+    <a href="/">Ir a la página principal</a>

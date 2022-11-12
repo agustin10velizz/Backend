@@ -2,8 +2,11 @@ import express from 'express';
 import ProductosRouter from './routes/productos.router.js';
 import __dirname from './utils.js';
 import Manager from './Manager/Manager.js';
+import { Server } from "socket.io";
+import ChatRouter from "./routes/chat.router.js"
 
 const app = express(); //inciar el aplicativo
+
 const server = app.listen(8080,()=>console.log("Se creo la pagina")) //Poner al aplicativo a escuchar
 
 
@@ -17,7 +20,7 @@ app.set("views",`${__dirname}/views`);
 app.set('view engine', 'ejs');
 
 
-app.get("/",(req,res)=>{
+app.get("/", (req,res)=>{
     res.render("formulario")
 })
 
@@ -25,4 +28,24 @@ const productoServicio = new Manager();
 app.get("/productos", async(req,res)=>{
     const productosArray = await productoServicio.getAll()
     res.render("history",{productosArray})
+})
+
+const io = new Server(server) 
+app.use ("/chat",ChatRouter)
+
+const mensajes = [];
+
+io.on("connection", async socket =>{
+    let productos = await productoServicio.getAll();
+    let productosArray = productos.products
+
+    socket.emit("productos",productosArray);
+    socket.emit("logs",mensajes);
+    socket.on ("mensaje", async data =>{
+        mensajes.push(data);
+        io.emit("logs",mensajes);
+    })
+    socket.on("authenticated",data=>{
+        socket.broadcast.emit("newUserConnected", data);
+    })
 })

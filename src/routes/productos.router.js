@@ -1,6 +1,8 @@
 import { Router } from "express";
 import uploader from "../services/upload.js";
 import productoManager from "../Manager/Manager.js"
+import { Server } from "socket.io";
+
 
 const productoServicio = new productoManager();
 const router = Router();

@@ -1,7 +1,5 @@
 import { Router } from "express";
-import uploader from "../services/upload.js";
-import productoManager from "../Manager/Manager.js"
-import { Server } from "socket.io";
+import productoManager from "../Manager/producto.Manager.js"
 
 
 const productoServicio = new productoManager();
@@ -9,41 +7,84 @@ const router = Router();
 
 
 router.get('/',async (req,res)=>{
-    let result = await productoServicio.getAll()
+    let result = await productoServicio.getProducts()
     res.send(result);
 })
 
 
-router.get("/:id",async(req,res)=>{
-    let id = req.params.id
-    if(isNaN(id)) return res.status(400).send ({status:"error", error:"producto no encontrado"})
-    let result = await productoServicio.getByID(id)
-    res.send(result)
+router.get("/:pid",async(req,res)=>{
+    const {pid} = req.params
+    const id = parseInt(pid)
+    const existsProduct = await productoServicio.exists(id);
+if(!existsProduct) return res.status(404).send({status:"error",error:"Producto no encontrado"})
+    const product = await productoServicio.getProductById(id)
+    res.send({status:"success",payload:product})
 })
 
 
 
-router.post("/:id",uploader.single("img"),async(req,res)=>{
-    const img = req.protocol+"://"+req.hostname+':8080/image'+req.file.filename
-    let producto = req.body;
-    producto.img = img;
-    producto.precio = parseInt(producto.precio);
-    const result = await productoServicio.save(producto);
-    res.send({status:"bien hecho", message:"prodcuto agregado"});
+router.post("/",async(req,res)=>{
+    if (admin) {
+        const {title,description,thumbnail,price,stock}= req.body;
+    if(!title||!description||!thumbnail||!price||!stock) return res.status(400).send({status:"error",error:"Incompleto"})
+    let timestamp = Date.now();
+    let code = Math.random().toString(16).slice(2)
+    const productToInsert ={
+        timestamp,
+        title,
+        description,
+        code,
+        thumbnail,
+        price,
+        stock
+    }
+    const result = await productoServicio.addProduct(productToInsert);
+
+    res.send({status:"success",payload:result})
+    } else {
+        res.send({status:"error",error:"Admin only"})
+    }
 })
 
-router.put("/:id",async(req,res)=>{
-   let {id} = req.params;
-   let producto = req.body;
-   await productoServicio.putFile(producto, id)
-   res.send("producto actualizado")
+router.put("/:pid",async(req,res)=>{
+    if(admin){
+        const {pid} = req.params
+        const id = parseInt(pid)
+        const existsProduct = await productoServicio.exists(id);
+        if(!existsProduct) return res.status(404).send({status:"error",error:"Product not found"})
+        const {title,description,thumbnail,price,stock}= req.body;
+
+    if(!title||!description||!thumbnail||!price||!stock) return res.status(400).send({status:"error",error:"Incomplete values"})
+    let timestamp = Date.now();
+    let code = Math.random().toString(16).slice(2)
+
+    const productToPut ={
+        timestamp,
+        title,
+        description,
+        code,
+        thumbnail,
+        price,
+        stock
+    }
+    const result = await productoServicio.putProduct(productToPut, id)
+    res.send({status:"success",payload:result})
+    }else{
+        res.send({status:"error",error:"Incompleto"})
+    }
 })
 
-router.delete("/:id",async(req,res)=>{
-   let id = req.params.id;
-   if(isNaN(id)) return res.status(400).send({status:"error", error:"Invalido type"})
-   let result = await productoServicio.deleteById(id)
-       res.send(result)
+router.delete("/:pid",async(req,res)=>{
+    if(admin){
+        const {pid} = req.params
+        const id = parseInt(pid)
+        const existsProduct = await productoServicio.exists(id);
+        if(!existsProduct) return res.status(404).send({status:"error",error:"Producto no encontrado"})
+        const deletedProduct = productoServicio.deleteById(id)
+        res.send({status:"succes",payload:deletedProduct,message:"Producto eliminado correctamente"})
+    }else{
+        res.send({status:"error",error:"Incompleto"})
+    }
 })
 
 export default router

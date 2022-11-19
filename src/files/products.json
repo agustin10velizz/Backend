@@ -1,0 +1,21 @@
+[  {
+    "title": "ADIDAS AL RIHLA",
+    "description": "Pelota de futbol mundial 2022",
+    "image": "https://essential.vtexassets.com/arquivos/ids/543850-800-auto?v=637849502748070000&width=800&height=auto&aspect=true",
+    "price": 12000,
+    "stock": 10,
+    "timestamp": 1668714423956,
+    "code": "90fg23es23cv",
+    "id": 1
+},
+{
+    "title": "ADIDAS TELSTAR 18",
+    "description": "Descripción 2 de prueba",
+    "image": "https://www.digitalsport.com.ar/files/products/5a677e6f8acb5-456347-500x500.jpg",
+    "price": 2000,
+    "stock": 100,
+    "timestamp": 1668719051249,
+    "code": "34oi12zx56w",
+    "id": 2
+}
+]

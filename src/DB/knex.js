@@ -26,3 +26,5 @@ catch (error) {
 console.log(error)
 }
 
+export default sqliteOptions;
+

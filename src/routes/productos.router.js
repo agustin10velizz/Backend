@@ -1,15 +1,28 @@
 import { Router } from "express";
 import productoManager from "../Manager/producto.Manager.js"
+import sqliteOptions from "../DB/knex.js"
+import containerSQL from "../container/ContainerSql.js"
+import uploader from "../services/upload.js";
 
 
 const productoServicio = new productoManager();
 const router = Router();
-
+const productoSQL = new containerSQL(sqliteOptions,"productos")
 
 router.get('/',async (req,res)=>{
-    let result = await productoServicio.getProducts()
+    let result = await productoSQL.getProducts()
     res.send(result);
 })
+
+router.post("/",uploader.single("image"),async(req,res)=>{
+    let product = req.body;
+    product.precio = parseInt(product.precio);
+    const parsedProduct = JSON.parse(JSON.stringify(product))
+    const result = await productoSQL.addProduct(parsedProduct);
+    res.send({status:"success", message:result});
+})
+
+
 
 
 router.get("/:pid",async(req,res)=>{

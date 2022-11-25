@@ -37,6 +37,10 @@ app.get("/productos", async(req,res)=>{
     res.render("history",{productosArray})
 })
 
+
+
+
+
 const io = new Server(server) 
 app.use ("/chat",ChatRouter)
 

@@ -1,15 +1,15 @@
 import fs from "fs";
-import { pid } from "process";
 import __dirname from "../utils.js";
 
-export default class CartManager {
+export default class CarritoManager {
     constructor() {
-        this.path = `${__dirname}/files/carts.json`
+        this.path = `${__dirname}/json/carrito.json`
         this.init();
     }
 
     init = async() =>{
-        if(!fs.existsSync(this.path)) await fs.promises.writeFile(this.path, JSON.stringify([]));
+        if(!fs.existsSync(this.path))
+         await fs.promises.writeFile(this.path, JSON.stringify([]));
     }
 
     readFile = async() =>{
@@ -24,7 +24,7 @@ export default class CartManager {
     getCartById = async(id) =>{
         const carts = await this.readFile();
         const cart = carts.find(cart =>cart.id === id);
-        return cart.cartProducts;
+        return cart.cartProductos;
     }
 
     exists = async(id) =>{
@@ -36,7 +36,6 @@ export default class CartManager {
         const carts = await this.readFile();
         const newCart = {
             id : carts.length===0 ? 1 : carts[carts.length - 1].id + 1,
-            timestamp: Date.now(),
             cartProducts: [] 
         }
         carts.push(newCart);
@@ -44,38 +43,38 @@ export default class CartManager {
         return newCart
     }
 
-    checkProduct = async(cid, pid)=>{
+    checkProduct = async(cid)=>{
         const carts = await this.readFile();
         const cart = carts.find(cart=> cart.id === cid)
-        const exists = cart.cartProducts.some(cProduct=> cProduct.id === pid)
+        const exists = cart.cartProductos.some(cProduct=> cProduct.id === pid)
         return exists
     }
 
-    updateCartwithProduct = async(cid,pid,quantity)=>{
+    updateCartwithProduct = async(cid,Cantidad)=>{
         const carts = await this.readFile();
         const cart = carts.find(cart=> cart.id === cid)
-        const productInCart = cart.cartProducts.find(cProduct=> cProduct.id === pid)
 
-        const actualQuantity = productInCart.quantity
-        const finalQuantity = actualQuantity + quantity
-        productInCart.quantity = finalQuantity
-
-        console.log(cart.cartProducts)
+        const productoInCart = cart.cartProductos.find(cProduct=> cProduct.id === pid)
+        const actualCantidad = productoInCart.Cantidad
+        const finalCantidad = actualCantidad + Cantidad
+        
+        productoInCart.Cantidad = finalCantidad
+        console.log(cart.cartProductos)
         await fs.promises.writeFile(this.path,JSON.stringify(carts,null,"\t"))
-        return cart.cartProducts
+        return cart.cartProductos
     }
 
-    addProductToCart = async(cid,pid,quantity) =>{
+    addProductToCart = async(cid,Cantidad) =>{
         const carts = await this.readFile();
         let updatedCart;
         const newCarts = carts.map(cart=>{
             if(cart.id===cid){
                 updatedCart = cart;
-                const newProduct = {
+                const newProducto = {
                     id: pid,
-                    quantity:quantity
+                    Cantidad:Cantidad
                 }
-                cart.cartProducts.push(newProduct);
+                cart.cartProductos.push(newProducto);
             }
             return cart;
         })
@@ -85,10 +84,11 @@ export default class CartManager {
 
     deleteCartById = async (id) =>{
         if(!id) {
-            return{
-            status:"error", message: "se requiere el ID",
-        };
+        return{
+        status:"error", message: "ID is required",
+         };
         }
+
         if (fs.existsSync(this.path)) {
             const carts = await this.readFile()
         let newCarts = carts.filter((cart) => cart.id != id)
@@ -97,26 +97,24 @@ export default class CartManager {
         JSON.stringify(newCarts, null, "\t")
         );
 
-        return{status: "success",message:"Producto eliminado correctamente",
-        }
-        } else{
         return{
-        status: "error",message: "Producto no encontrado",
-            }
-
-            }
+        status: "bien hecho",message:"Producto borrado correctamente",
+        }
+        }
+         else{
+        return{
+        status: "error", message: "Producto no encontrado",
+        }
+        }
         }
 
     deleteById = async (cid,pid) =>{
         const carts = await this.readFile();
         const cart = carts.find(cart=> cart.id === cid)
-
-        const productInCart = cart.cartProducts.find(cProduct=> cProduct.id === pid)
-        const indexOfProduct= cart.cartProducts.indexOf(productInCart)
-
-        cart.cartProducts.splice(indexOfProduct,1);
+        const productoInCart = cart.cartProductos.find(cProduct=> cProduct.id === pid)
+        const indexOfProduct= cart.cartProductos.indexOf(productoInCart)
+        cart.cartProductos.splice(indexOfProduct,1);
         await fs.promises.writeFile(this.path,JSON.stringify(carts,null,"\t"))
-        return cart.cartProducts
+        return cart.cartProductos
+    }
 }
-}
-

@@ -1,4 +1,4 @@
-import mongoose  from "mongoose";
+import mongoose,{ startSession }  from "mongoose";
 
 const URL = ' mongodb://127.0.0.1:27017'
 const connection = mongoose.connect(URL,err=>{

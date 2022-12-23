@@ -1,6 +1,8 @@
 import express from 'express';
+
 import ProductosRouter from './routes/productos.router.js';
 import chatRouter from "./routes/chat.router.js"
+import loginRouter from "./routes/login.js"
 
 import __dirname from './utils.js';
 
@@ -11,6 +13,10 @@ import { Server } from "socket.io";
 import containerSQL from "./container/containerSQL.js"
 import sqliteOptions from "./DB/knex.js";
 import { generateProduct } from "./managers/productoFaker.js";
+
+import MongoStore from "connect-mongo";
+import session from "express-session";
+
 
 const app = express(); //inciar el aplicativo
 const PORT = process.env.PORT || 8080;
@@ -29,8 +35,20 @@ app.get("/",async(req,res)=>{
 
 const productosService = new productosManager();
 app.use("/api/productos",ProductosRouter);
+app.use("/",loginRouter)
 app.use("/",chatRouter)
 const io = new Server(server);
+
+/*app.use(session({     ACA DEBERIA PORNER EL LINK DE MI SERVER PERO NOSE COMO HACERLO
+    store:MongoStore.create({
+        mongoUrl:"",
+        ttl:600,
+    }),
+    secret:"CoderSecret",
+    saveUnitialized:false,
+    resave:false
+}))*/
+
 
 const productoSQL = new containerSQL(sqliteOptions, "productos")
 const messagesSQL = new containerSQL(sqliteOptions, "messages")
@@ -38,11 +56,11 @@ const messages = []
 app.get("/productos",async(req,res)=>{
     let productos = await productoSQL.getAll();
 res.render("productos",
-{
+    {
     productos
-}
-)
-});
+    }
+        )
+    });
 
 app.get("/chat",(req,res)=>{
     res.render("chat");

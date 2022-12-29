@@ -12,10 +12,11 @@ import ChatManager from "./managers/chatManager.js";
 import { Server } from "socket.io";
 import containerSQL from "./container/containerSQL.js"
 import sqliteOptions from "./DB/knex.js";
-import { generateProduct } from "./managers/productoFaker.js";
 
 import MongoStore from "connect-mongo";
 import session from "express-session";
+import passport from "passport";
+import initializePassport from "./config.js"
 
 
 const app = express(); //inciar el aplicativo
@@ -48,6 +49,10 @@ const io = new Server(server);
     saveUnitialized:false,
     resave:false
 }))*/
+
+initializePassport();
+app.use(passport.initialize());
+app.use(passport.session())
 
 
 const productoSQL = new containerSQL(sqliteOptions, "productos")

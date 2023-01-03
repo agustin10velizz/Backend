@@ -8,9 +8,10 @@ import containerSQL from "../Container/containerSQL.js";
 import sqliteOptions from "../DB/knex.js";
 import { generateProduct } from "../managers/productoFaker.js";
 
-const router = Router()
 const productSQL = new containerSQL(sqliteOptions, "productos")
 const productosService = new productosManager();
+
+const router = Router()
 
 router.get("/test",async(req,res)=>{
     let productos = []

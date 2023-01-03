@@ -3,6 +3,8 @@ import express from 'express';
 import ProductosRouter from './routes/productos.router.js';
 import chatRouter from "./routes/chat.router.js"
 import loginRouter from "./routes/login.js"
+import objectProcessRouter from "./routes/objectProcess.js"
+
 
 import __dirname from './utils.js';
 
@@ -16,7 +18,7 @@ import sqliteOptions from "./DB/knex.js";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import passport from "passport";
-import initializePassport from "./config.js"
+import initializePassport from "./configPass.js"
 
 
 const app = express(); //inciar el aplicativo
@@ -38,6 +40,7 @@ const productosService = new productosManager();
 app.use("/api/productos",ProductosRouter);
 app.use("/",loginRouter)
 app.use("/",chatRouter)
+app.use("/",objectProcessRouter)
 const io = new Server(server);
 
 /*app.use(session({     ACA DEBERIA PORNER EL LINK DE MI SERVER PERO NOSE COMO HACERLO

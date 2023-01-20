@@ -2,10 +2,7 @@ import fs from "fs";
 import path from "path";
 import __dirname from "../utils.js";
 export default class ChatManager{
-    constructor(){
-        this.path = `${__dirname}./json/chatLog.json`;
-        this.init();
-    }
+  
 
     init = async() =>{
         if(!fs.existsSync(this.path)) await fs.promises.writeFile(this.path,JSON.stringify([]))

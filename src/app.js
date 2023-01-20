@@ -18,7 +18,12 @@ import sqliteOptions from "./DB/knex.js";
 import MongoStore from "connect-mongo";
 import session from "express-session";
 import passport from "passport";
-import initializePassport from "./configPass.js"
+import initializePassport from "./configPass.js";
+import config from "./config/config.js";
+import {addLogger} from "./utils/logger.js";
+import cluster from "cluster"
+import os from "os";
+const CPUs = os.cpus().length;
 
 
 const app = express(); //inciar el aplicativo
@@ -70,6 +75,10 @@ res.render("productos",
         )
     });
 
+
+app.get("/*",(req,res)=>{
+        req.logger.warning("Se entró a una ruta inexistente con el método "+ req.method +": " + req.url)
+    })
 app.get("/chat",(req,res)=>{
     res.render("chat");
 })
@@ -88,3 +97,15 @@ io.on("connection", async socket=>{
         socket.broadcast.emit("newUserConnected", data);
     })
 })
+
+
+/*if(cluster.isPrimary){
+        console.log("Proceso primario ejecutándose con PID " + process.pid)
+        for(let i=0;i<CPUs;i++){
+            cluster.fork();
+         }
+        cluster.on("exit",()=>console.log("Proceso muerto"))
+     }else{
+     console.log("Proceso worker ejecutado con PID "+process.pid)
+      app.listen(config.app.PORT,()=>console.log("Listening on "+ config.app.PORT))
+   }*/

@@ -3,7 +3,6 @@ import path from "path";
 import __dirname from "../utils.js";
 
 
-const pathToFile = __dirname+"./json/productosFaker.json";
 
 const success = {
     status: "success",

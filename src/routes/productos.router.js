@@ -10,7 +10,6 @@ import { generateProduct } from "../managers/productoFaker.js";
 
 const productSQL = new containerSQL(sqliteOptions, "productos")
 const productosService = new productosManager();
-
 const router = Router()
 
 router.get("/test",async(req,res)=>{

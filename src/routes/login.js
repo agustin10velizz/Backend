@@ -1,8 +1,9 @@
 import { json, Router, text} from "express";
 import __dirname from "../utils.js";
-import userModel from "../managers/loginManager.js";
+import userModel from "../managers/loginManager.js"
 import passport from "passport";
 import iniciarPassport from "../configPass.js"
+import {createHash, validatePassword} from "../utils.js";
 
 const router = Router()
 

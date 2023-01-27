@@ -1,41 +1,52 @@
 import passport from "passport";
 import local from "passport-local";
-import userModel from "./managers/loginManager.js";
-import { createHash, validatePassword } from "./utils.js";
+import UserDAO from "./daos/models/User.model.js"
+import {createHash, validatePassword} from "./utilss/brcypt.js"
+import userModel from "../daos/models/User.model.js";
 
 const localStrategy = local.Strategy;
+const userService = new UserDAO();
+const PORT = process.env.PORT || config.app.PORT || 8080
+
 
 const initializePassport = ()=>{
     passport.use("register",new localStrategy({passReqToCallback:true,usernameField:"email"},async(req,email,password,done)=>{
         try{
-            const user = req.body.user
-            if(!user) return done(null, false,{message:"Valores Incompletos"})
-            const exists = await userModel.findOne({email})
-            if(exists) return done(null,false,{message:"El usuario ya existe"})
+            const {name,adress,age,phone_number,image} = req.body;
+            if(!name||!adress||!age||!phone_number) return done(null, false,{message:"Valores Incompletos"})
+            const exists = await userService.getUserBy({email})
+            if(exists) return done(null,false,{message:"User already exists"})
+            const imageURL = req.protocol+"://"+req.hostname+":"+PORT+"/thumbnail/"+req.file.filename;
             const hashedPassword = await createHash(password)
             const fullUser = {
+                name,
+                adress,
+                age,
+                phone_number,
+                imageURL,
                 email,
-                user,
-                password: hashedPassword
+                password:hashedPassword,
             }
-            const result = await userModel.create(fullUser);
+            const result = await userService.saveUser(fullUser);
             done(null, result)
         }catch(error){
+            console.log(error)
             done(error)
         }
     }))
 
     passport.use("login", new localStrategy({usernameField:"email"},async(email,password,done)=>{
-try{
-    if(!email||!password) return done(null,false,{message:"Valores Incompletos"})
-    const user = await userModel.findOne({email});
-    if(!user) return done(null,false,{message:"Usuario no encontrado"})
-    const isValidPassword = await validatePassword(user,password)
-    if(!isValidPassword) return done(null,false,{message:"Contraseña incorrecta"})
-    done(null,user)
-}catch(error){
-    done(error)
-}
+        try{
+            if(!email || !password) return done(null,false,{message:"Incomplete values"})
+            const user = await userService.getUserBy({email})
+            if(!user) return done(null,false,{message:"Incorrect password"})
+            const isValidpassword = await validatePassword(user,password);
+            if(!isValidpassword) return done(null,false,{message:"Incorrect password"})
+            done(null,user);
+        }
+        catch(error){
+            done(error)
+        }
     }))
 
     passport.serializeUser((user,done)=>{

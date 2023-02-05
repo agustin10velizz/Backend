@@ -1,8 +1,8 @@
-import ProductDAO from "../dao/Producto.dao.js"
-import UserDAO from "../dao/User.dao.js"
+import UserDTO from "../daos/dto/userDto.js"
+import User from "../daos/models/User.model.js"
+import { productService, userService } from "../services/services.js"
 
-const userService = new UserDAO()
-const productService = new ProductDAO()
+
 
 const login = (req,res)=>{
     res.render("login")

@@ -1,10 +1,11 @@
-import UserDAO from "../dao/User.dao.js";
 import uploader from "../services/upload.js";
 import config from "../config/dotenvConfig.js"
 import { json } from "express";
+import UserDTO from "../daos/dto/userDto.js";
+
+const userService = new UserDTO()
 
 const PORT = process.env.PORT || config.app.PORT || 8080
-const userService = new UserDAO();
 
 const register =async(req,res)=>{
     res.redirect("/login")
